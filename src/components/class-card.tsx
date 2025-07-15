@@ -36,7 +36,7 @@ export const ClassCard = ({ data }: Props) => {
                 <div className="flex gap-2">
                     <Button
                         component={Link}
-                        href={`/class/${data.id}/configure`}
+                        href={`/class/${data.id}/grades`}
                         variant="contained"
                         color="primary"
                         size="small"

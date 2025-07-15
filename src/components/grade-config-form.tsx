@@ -1,7 +1,7 @@
 "use client"
 
 import { GradeComponentConfig } from "@/types/gradeConfig"
-import { Alert, Button, TextField} from "@mui/material"
+import { Alert, Box, Button, Paper, Slider, Typography} from "@mui/material"
 import { useState } from "react"
 
 interface Props {
@@ -20,53 +20,86 @@ export const GradeConfigForm = ({ initialData }: Props) => {
         setData(updated)
     }
 
-    return (
-        <form className="space-y-6 max-w-xl mx-auto">
-            <h2 className="text-xl font-semibold text-primary">
-                Konfigurasi Komponen Nilai
-            </h2>
+    // simulasi preview score 80
+    const sampleScore = 87
+    const finalGrade = data.reduce(
+        (acc, curr) => acc + (sampleScore *  curr.percentage) / 100,
+        0
+    )
 
-            <div className="grid gap-4">
+    return (
+        <Box className="space-y-6 max-w-xl">
+            <Typography 
+                className="font-semibold text-primary"
+                variant="h6"
+            >
+                Konfigurasi Komponen Nilai
+            </Typography>
+
+            {/* slider */}
+            <div className="bg-white rounded-lg p-4 shadow space-y-4">
                 {data.map((item, index) => (
                     <div 
                         key={item.component}
-                        className="flex justify-between items-center"
+                        className="space-y-2"
                     >
-                        <label className="w-1/2">{item.component}</label>
-
-                        <TextField 
-                            type="number"
-                            size="small"
+                        <div className="flex justify-between">
+                            <Typography className="font-medium">
+                                {item.component}
+                            </Typography>
+                            <Typography>
+                                {item.percentage}%
+                            </Typography>
+                        </div>
+                        <Slider 
                             value={item.percentage}
-                            onChange={(e) => handleChange(index, parseInt(e.target.value || "0"))}
-                            inputProps={{ min: 0, max: 100 }}
-                            className="w-24"
+                            onChange={(_, value) => handleChange(index, value as number)}
+                            min={0}
+                            max={100}
+                            step={1}
                         />
-
-                        <span className="ml-2">%</span>
                     </div>
                 ))}
             </div>
-
+            
             {!isValid && (
                 <Alert
                     severity="error"
-                    className="text-sm"
                 >
                     Total Harus 100% (saat ini: {total}%)
                 </Alert>
             )}
 
-            <div className="pt-4">
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    disabled={!isValid}
+            <Button
+                variant="contained"
+                color="primary"
+                disabled={!isValid}
+            >
+                Simpan Konfigurasi
+            </Button>
+
+            {/* realtime preview */}
+            <Paper className="p-4 bg-gray-50 shadow-md">
+                <Typography
+                    variant="subtitle1"
+                    className="mb-2 font-semibold"
                 >
-                    Simpan Konfigurasi
-                </Button>
-            </div>
-        </form>
+                    Preview Kalkulasi (contoh nilai: {sampleScore})
+                </Typography>
+
+                {data.map((item) => (
+                    <Typography
+                        key={item.component}
+                    >
+                        {item.percentage}: {sampleScore} x {item.percentage}% = {" "}
+                        {(sampleScore * item.percentage) / 100}
+                    </Typography>
+                ))}
+
+                <Typography className="mt-3 font-bold text-primary">
+                    Nilai Akhir: {finalGrade.toFixed(2)}
+                </Typography>
+            </Paper>
+        </Box>
     )
 }
