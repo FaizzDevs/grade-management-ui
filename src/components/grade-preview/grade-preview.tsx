@@ -4,9 +4,9 @@ import { calculateFinalGrade } from "@/app/utils/calculate-grade"
 import { exportExcel } from "@/app/utils/export-excel"
 import { mockGradeConfig } from "@/lib/mock/gradeConfig"
 import { StudentGrade } from "@/types/students"
-import { Button, Dialog, DialogContent, DialogTitle, List, ListItem, ListItemText, Paper, Typography } from "@mui/material"
-import clsx from "clsx"
+import { Button, Chip, Dialog, DialogContent, DialogTitle, Box, Divider, Paper, Table, TableBody, TableCell, TableRow, Typography } from "@mui/material"
 import { useState } from "react"
+import { FileDownload, Visibility } from "@mui/icons-material";
 
 interface Props {
     students: StudentGrade[]
@@ -22,86 +22,115 @@ export const GradePreview = ({ students }:Props ) => {
     }
 
     return (
-        <Paper className="mt-6 p-4 shadow-md">
-            <Typography
-                variant="h6"
-                className="font-semibold mb-4 text-primary"
-            >
-                Preview Nilai Akhir
-            </Typography>
+        <Paper className="mt-6 p-6 rounded-xl shadow-lg bg-white">
 
-            <List>
-                {students.map((student) => {
-                    const finalGrade = calculateFinalGrade(student, mockGradeConfig)
+            {/* headers */}
+            <div className="flex justify-between items-center mb-4">
+                <Typography
+                    variant="h6"
+                    className="font-semibold text-primary"
+                >
+                    📊 Preview Nilai Akhir
+                </Typography>
+                <Button
+                    variant="contained"
+                    color="success"
+                    startIcon={<FileDownload />}
+                    onClick={() => exportExcel(students, "Grade-Report")}
+                >
+                    Export Excel
+                </Button>
+            </div>
+            <Divider className="mb-4" />
 
-                    return (
-                        <ListItem
-                            key={student.id}
-                            className="flex justify-between border-b"
-                        >
-                            <ListItemText primary={student.name} />
-                            <span
-                                className={clsx(
-                                    "font-bold",
-                                    finalGrade >= 80 ? "text-green-600" :
-                                    finalGrade >= 60 ? "text-yellow-500" : "text-red-600"
-                                )}
-                            >
-                                {finalGrade}
-                            </span>
+            {/* Daftar Mahasiswa */}
+            <div className="max-h-[400px] overflow-y-auto rounded-lg border border-gray-200">
+                <Table size="small">
+                    <TableBody>
+                        {students.map((student) => {
+                            const finalGrade = calculateFinalGrade(student, mockGradeConfig);
+                            const gradeColor = finalGrade >= 80 ? "success" : finalGrade >= 60 ? "warning" : "error";
 
-                            <Button
-                                variant="outlined"
-                                size="small"
-                                onClick={() => handleOpen(student)}
-                            >
-                                Detail
-                            </Button>
-                        </ListItem>
-                    )
-                })}
-            </List>
+                            return (
+                                <TableRow key={student.id} hover>
+                                    <TableCell className="font-medium">
+                                        {student.name}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Box display="flex" justifyContent="flex-end" alignItems="center" gap={1}>
+                                            <Chip
+                                                label={finalGrade}
+                                                color={gradeColor}
+                                                className="font-bold"
+                                                size="small"
+                                            />
+                                            <Button
+                                                variant="outlined"
+                                                startIcon={<Visibility />}
+                                                size="small"
+                                                onClick={() => handleOpen(student)}
+                                            >
+                                                Detail
+                                            </Button>
+                                        </Box>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
+                    </TableBody>
+                </Table>
+            </div>
 
+            {/* detail nilai */}
             <Dialog
                 open={open}
                 onClose={() => setOpen(false)}
                 fullWidth
+                maxWidth="sm"
             >
-                <DialogTitle>Detail Nilai</DialogTitle>
+                <DialogTitle className="font-bold text-primary">Detail Nilai Mahasiswa</DialogTitle>
                 <DialogContent>
                     {selectedStudents && (
-                        <div className="space-y-2">
-                            <Typography variant="body1">
-                                Nama: {selectedStudents.name}
+                        <div className="space-y-4">
+                            <Typography variant="subtitle1" className="font-semibold">
+                                {selectedStudents.name}
                             </Typography>
-                            <Typography variant="body2">
+                            <Divider />
+
+                            {/* breakdown */}
+                            <Typography
+                                variant="body2"
+                                className="mb-2"
+                            >
                                 Breakdown per Bab:
                             </Typography>
-
-                            <ul className="list-disc pl-4">
-                                {Object.entries(selectedStudents.grades).map(([chapter, comps]) => (
-                                    <li key={chapter}>
-                                        <strong>{chapter}</strong>: {" "}
-                                        {Object.entries(comps).map(([comp, score]) => (
-                                            <span key={comp}>
-                                                {comp}: {score},
-                                            </span>
-                                        ))}
-                                    </li>
-                                ))}
-                            </ul>
+                            
+                            <Table size="small">
+                                <TableBody>
+                                    {Object.entries(selectedStudents.grades).map(([chapter, comps]) => (
+                                        <TableRow key={chapter}>
+                                            <TableCell className="font-bold">
+                                                {chapter}
+                                            </TableCell>
+                                            <TableCell>
+                                                {Object.entries(comps).map(([comp, score]) => (
+                                                    <Chip 
+                                                        key={comp}
+                                                        label={`${comp}: ${score}`}
+                                                        variant="outlined"
+                                                        size="small"
+                                                        className="mr-2 mb-1"
+                                                    />
+                                                ))}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
                         </div>
                     )}
                 </DialogContent>
             </Dialog>
-
-            <Button
-                variant="contained"
-                color="success"
-                onClick={() => exportExcel(students, "Grade-Report")}
-            >
-                Export Excel
-            </Button>
         </Paper>
     )
 }
