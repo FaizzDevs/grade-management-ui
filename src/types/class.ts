@@ -6,4 +6,5 @@ export interface ClassInfo {
     semester: string;
     studentCount: number;
     isConfigured: boolean;
+    progress?: number;
 }

@@ -7,19 +7,19 @@ export const mockStudents: StudentGrade[] = [
         nim: "000001",
         grades: {
             "Bab 1": {
-                Tugas: 80,
+                Tugas: 0,
                 UTS: 90,
                 UAS: 85,
                 Proyek: 75,
-                Kuis: 80
+                Kuis: 0
             },
 
             "Bab 2": {
                 Tugas: 70,
                 UTS: 80,
-                UAS: 85,
+                UAS: 5,
                 Proyek: 90,
-                Kuis: 75
+                Kuis: 5
             }
         },
     },
@@ -32,16 +32,16 @@ export const mockStudents: StudentGrade[] = [
                 Tugas: 80,
                 UTS: 90,
                 UAS: 85,
-                Proyek: 75,
+                Proyek: 100,
                 Kuis: 80
             },
 
             "Bab 2": {
                 Tugas: 70,
-                UTS: 80,
+                UTS: 90,
                 UAS: 85,
                 Proyek: 90,
-                Kuis: 75
+                Kuis: 100
             }
         },
     },

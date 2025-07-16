@@ -93,10 +93,4 @@ export const GradeInputTable = () => {
             </Table>
         </TableContainer>
     )
-
-    return (
-        <div>
-            Halo
-        </div>
-    )
 }

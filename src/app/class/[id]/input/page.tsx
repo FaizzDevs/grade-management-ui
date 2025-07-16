@@ -1,9 +1,9 @@
-import { StudentGradeTable } from "@/components/grade-input/student-grade-table";
+import { GradeInputTable } from "@/components/grade-input/grade-input-table";
 
 export default function InputGradePage() {
     return (
         <main className="p-6">
-            <StudentGradeTable />
+            <GradeInputTable />
         </main>
     )
 }
