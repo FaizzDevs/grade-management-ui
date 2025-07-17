@@ -2,11 +2,13 @@
 
 import { ClassCard } from "@/components/class-card"
 import { mockClasses } from "@/lib/mock/classes"
-import { Card, CardContent, Container, MenuItem, Select, TextField, Typography } from "@mui/material"
+import { Card, CardContent, Container, MenuItem, Box, Select, TextField, Typography, FormControl } from "@mui/material"
 import { useState } from "react"
 import { useProgressStore } from "@/app/store/progressStore"
 import { ClassInfo } from "@/types/class"
 import SchoolIcon from "@mui/icons-material/School";
+import GroupIcon from "@mui/icons-material/Group"
+import AssessmentIcon from "@mui/icons-material/Assessment"
 
 // Komponen wrapper agar bisa pakai Hook di tempat yang benar
 const ClassCardWithProgress = ({ data }: { data: ClassInfo }) => {
@@ -30,10 +32,14 @@ export default function DashboardPage() {
 
     if (sort === "progress") {
         filteredClasses = [...filteredClasses].sort((a, b) => {
-            const pa = useProgressStore.getState().progressMap[a.id] ?? 0;
-            const pb = useProgressStore.getState().progressMap[b.id] ?? 0;
-            return pb - pa;
+            const pa = useProgressStore.getState().progressMap[a.id] ?? 0
+            const pb = useProgressStore.getState().progressMap[b.id] ?? 0
+            return pb - pa
         })
+    } else if (sort === "name") {
+        filteredClasses = [...filteredClasses].sort((a, b) => 
+            a.name.localeCompare(b.name)
+        )
     }
 
     const totalStudents = filteredClasses.reduce(
@@ -48,7 +54,7 @@ export default function DashboardPage() {
 
     return (
         <main className="p-6 bg-gray-50 min-h-screen">
-            <Container maxWidth="lg" className="space-y-6">
+            <Container maxWidth="lg" className="space-y-8">
 
                 {/* Header */}
                 <div className="flex items-center gap-3">
@@ -59,25 +65,34 @@ export default function DashboardPage() {
                 </div>
 
               {/* summary */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="shadow-md">
-                        <CardContent>
-                            <Typography variant="body2" color="textSecondary">Total Kelas</Typography>
-                            <Typography variant="h6" className="font-semibold">{filteredClasses.length}</Typography>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <Card className="shadow-lg hover:shadow-xl transition rounded-xl">
+                        <CardContent className="flex items-center gap-3">
+                            <SchoolIcon sx={{ color: "#1976d2" }} fontSize="large" />
+                            <Box>
+                                <Typography variant="body2" color="textSecondary">Total Kelas</Typography>
+                                <Typography variant="h6" className="font-semibold">{filteredClasses.length}</Typography>
+                            </Box>
                         </CardContent>
                     </Card>
 
-                    <Card className="shadow-md">
-                        <CardContent>
-                            <Typography variant="body2" color="textSecondary">Total Mahasiswa</Typography>
-                            <Typography variant="h6" className="font-semibold">{totalStudents}</Typography>
+                    <Card className="shadow-lg hover:shadow-xl transition rounded-xl">
+                        <CardContent className="flex items-center gap-3">
+                            <GroupIcon  sx={{ color: "#1976d2" }} fontSize="large" />
+                            <Box>
+                                <Typography variant="body2" color="textSecondary">Total Mahasiswa</Typography>
+                                <Typography variant="h6" className="font-semibold">{totalStudents}</Typography>
+                            </Box>
                         </CardContent>
                     </Card>
 
-                    <Card className="shadow-md">
-                        <CardContent>
-                            <Typography variant="body2" color="textSecondary">Rata-rata Progress</Typography>
-                            <Typography variant="h6" className="font-semibold">{totalProgress}%</Typography>
+                    <Card className="shadow-lg hover:shadow-xl transition rounded-xl">
+                        <CardContent className="flex items-center gap-3">
+                            <AssessmentIcon sx={{ color: "#1976d2" }} fontSize="large" />
+                            <Box>
+                                <Typography variant="body2" color="textSecondary">Rata-rata Progress</Typography>
+                                <Typography variant="h6" className="font-semibold">{totalProgress}%</Typography>
+                            </Box>
                         </CardContent>
                     </Card>
                 </div>
@@ -94,14 +109,16 @@ export default function DashboardPage() {
                     />
                     
                     <div className="flex gap-4">
-                        <Select
-                            value={sort}
-                            size="small"
-                            onChange={(e) => setSort(e.target.value)}
-                        >
-                            <MenuItem>Sort: Nama</MenuItem>
-                            <MenuItem>Sort: Progress</MenuItem>
-                        </Select>
+                        <FormControl>
+                            <Select
+                                value={sort}
+                                size="small"
+                                onChange={(e) => setSort(e.target.value)}
+                            >
+                                <MenuItem value="name">Sort: Nama</MenuItem>
+                                <MenuItem value="progress">Sort: Progress</MenuItem>
+                            </Select>
+                        </FormControl>
                         <Select
                             value={semester}
                             size="small"
@@ -113,7 +130,7 @@ export default function DashboardPage() {
                         </Select>
                     </div>
                 </div>
-
+                
                 {/* kelas card */}
                 {filteredClasses.length > 0 ? (
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

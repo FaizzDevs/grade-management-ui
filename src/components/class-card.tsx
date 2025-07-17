@@ -14,10 +14,10 @@ interface Props {
 export const ClassCard = ({ data }: Props) => {
     return (
        <Card 
-            className="w-full max-w-[380px] shadow-lg rounded-3xl hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-gray-100"
+            className="w-full max-w-[380px] rounded-3xl shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border border-gray-100 dark:border-gray-700"
             sx={{ overflow: "hidden" }}
         >
-            <CardContent className="p-4 space-y-4">
+            <CardContent className="p-5 space-y-5 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
                 
                 {/* header */}
                 <div className="flex justify-between items-center">
@@ -28,7 +28,8 @@ export const ClassCard = ({ data }: Props) => {
                                 width: 48,
                                 height: 48,
                                 fontWeight: "bold",
-                                color: "#fff"
+                                color: "#fff",
+                                boxShadow: "0 4px 10px rgba(0,0,0,0.15)"
                             }}
                         >
                             {data.name.charAt(0).toUpperCase()}

@@ -22,4 +22,11 @@ export const mockClasses: ClassInfo[] = [
         studentCount: 28,
         isConfigured: true
     },
+    {
+        id: "matkul-04",
+        name: "Mobile Computing",
+        semester: "Genap",
+        studentCount: 17,
+        isConfigured: true
+    },
 ]

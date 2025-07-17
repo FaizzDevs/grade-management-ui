@@ -7,6 +7,8 @@ import { StudentGrade } from "@/types/students"
 import { Button, Chip, Dialog, DialogContent, DialogTitle, Box, Divider, Paper, Table, TableBody, TableCell, TableRow, Typography } from "@mui/material"
 import { useState } from "react"
 import { FileDownload, Visibility } from "@mui/icons-material";
+import { exportPDF } from "@/app/utils/export-pdf"
+import { downloadTemplate } from "@/app/utils/download-template"
 
 interface Props {
     students: StudentGrade[]
@@ -23,23 +25,39 @@ export const GradePreview = ({ students }:Props ) => {
 
     return (
         <Paper className="mt-6 p-6 rounded-xl shadow-lg bg-white">
-
             {/* headers */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
                 <Typography
                     variant="h6"
                     className="font-semibold text-primary"
                 >
                     📊 Preview Nilai Akhir
                 </Typography>
-                <Button
-                    variant="contained"
-                    color="success"
-                    startIcon={<FileDownload />}
-                    onClick={() => exportExcel(students, "Grade-Report")}
-                >
-                    Export Excel
-                </Button>
+
+                <div className="flex gap-2 flex-wrap">
+                    <Button
+                        variant="contained"
+                        color="success"
+                        startIcon={<FileDownload />}
+                        onClick={() => exportExcel(students, "Grade-Report")}
+                    >
+                        Export Excel
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => exportPDF(students, "Grade-Report")}
+                    >
+                        Export PDF
+                    </Button>
+                     <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => downloadTemplate()}
+                    >
+                        Download Template
+                    </Button>
+                </div>
             </div>
             <Divider className="mb-4" />
 

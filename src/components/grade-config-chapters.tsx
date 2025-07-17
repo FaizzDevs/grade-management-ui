@@ -2,7 +2,7 @@
 
 import { mockGradeConfig } from "@/lib/mock/gradeConfig"
 import { GradeComponentKey } from "@/types/gradeConfig"
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Paper, Slider, Typography } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Divider, Paper, Slider, Typography } from "@mui/material"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useState } from "react"
 
@@ -13,11 +13,11 @@ export const GradeConfigChapters = () => {
     const totalComponent = data.components.reduce((acc, c) => acc + c.percentage, 0)
     const isComponentValid = totalComponent === 100
 
-    const handleComponentChange = (index: number, value: number) => {
-        const updated = [...data.components]
-        updated[index].percentage = value
-        setData({ ...data, components: updated })
-    }
+    // const handleComponentChange = (index: number, value: number) => {
+    //     const updated = [...data.components]
+    //     updated[index].percentage = value
+    //     setData({ ...data, components: updated })
+    // }
 
     const handleChaptersChange = (chapterIndex: number, key: GradeComponentKey, value: number) => {
         const updated = [...data.chapters]
@@ -26,57 +26,37 @@ export const GradeConfigChapters = () => {
     }
 
     return (
-        <Box className="max-w-3xl mx-auto space-y-6">
-            <Typography
-                variant="h6"
-                className="font-semibold text-primary"
+        <Box className="max-w-5xl mx-auto space-y-10 p-6">
+
+            <Typography 
+                className="font-bold text-primary"
+                variant="h4"
             >
-                Konfigurasi Komponen Nilai & Bab
+                Kontribusi per Bab
             </Typography>
 
-            {/* konfigurasi komponen */}
-            <Paper className="p-4 shadow space-y-4">
-                <Typography className="font-medium">
-                    Persentase komponen (Total harus 100%)
+            <Paper className="p-6 rounded-xl shadow space-y-4">
+                <Typography
+                    variant="h6"
+                    className="font-semibold"
+                >
+                    Detail Kontribusi per Bab
                 </Typography>
-
-                {data.components.map((item, index) => (
-                    <Box
-                        key={item.component}
-                        className="space-y-2"
-                    >
-                        <div className="flex justify-between">
-                            <span>{item.component}</span>
-                            <span>{item.percentage}%</span>
-                        </div>
-                        <Slider
-                            value={item.percentage}
-                            onChange={(_, value) => handleComponentChange(index, value as number)}
-                            min={0}
-                            max={100}
-                        />
-                    </Box>
-                ))}
-                {!isComponentValid && 
-                    <Alert severity="error">
-                        Total harus 100% (Saat ini: {totalComponent})
-                    </Alert>
-                }
-            </Paper>
-
-            {/* konfigurasi per bab */}
-            <Paper className="p-4 shadow space-y-4">
-                <Typography className="font-medium">
-                    Kontribusi per Bab
-                </Typography>
+                <Divider />
 
                 {data.chapters.map((chapter, chapterIndex) => (
                     <Accordion
                         key={chapter.chapter}
                         className="border rounded-lg"
+                        sx={{
+                            "&.Mui-expanded": {
+                            borderLeft: "4px solid #1976d2",
+                            backgroundColor: "#f9fafb",
+                            },
+                        }}
                     >
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Typography className="font-semibold">
+                            <Typography className="font-semibold text-primary">
                                 {chapter.chapter}
                             </Typography>
                         </AccordionSummary>
@@ -105,12 +85,18 @@ export const GradeConfigChapters = () => {
                 ))}
             </Paper>
 
-            <Button
-                variant="contained"
-                color="primary"
-            >
-                Simpan Konfigurasi
-            </Button>
+            {/* simpan */}
+            <Box className="bottom-4">
+                <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    sx={{ py: 1.5, fontWeight: "bold", borderRadius: "10px" }}
+                    disabled={!isComponentValid}
+                >
+                    ✅ Simpan Konfigurasi
+                </Button>
+            </Box>
         </Box>
     )
 }
